@@ -11,15 +11,13 @@ app = FastAPI()
 # Mount static files directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Set Hugging Face API token and cache directory
-os.environ["HUGGING_FACE_HUB_TOKEN"] = "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"
-cache_dir = "/workspace/.cache"
+# Use the mounted path for the Hugging Face model
+model_path = "/opt/integrations/FLUX-1-Dev"
 
-# Load model
+# Load model from the mounted path
 pipe = FluxPipeline.from_pretrained(
-    "black-forest-labs/FLUX.1-dev",
-    torch_dtype=torch.bfloat16,
-    cache_dir=cache_dir
+    model_path,
+    torch_dtype=torch.bfloat16
 )
 pipe.enable_model_cpu_offload()
 
