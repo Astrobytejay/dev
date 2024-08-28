@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a2e;
+            background-color: #000004;
             margin: 0;
             padding: 0;
             display: flex;
@@ -16,17 +16,18 @@
             height: 100vh;
             width: 100%;
             color: #fff;
+            overflow: hidden;
         }
         .header-image {
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #0f3460;
+            background-color: #030416;
             padding: 20px;
         }
         .header-image img {
-            max-width: 200px; /* Adjust the size as needed */
+            max-width: 200px;
             height: auto;
         }
         .image-display {
@@ -36,13 +37,35 @@
             justify-content: center;
             align-items: center;
             background-color: #162447;
+            position: relative;
+            overflow: auto;
+            padding: 20px;
+            box-sizing: border-box;
         }
         .image-display img {
             max-width: 100%;
             max-height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 8px;
-            display: none; /* Hide until image is available */
+            display: none;
+        }
+        .edit-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            background-color: #e94560;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            display: none;
+            z-index: 10;
+        }
+        .edit-button:hover {
+            background-color: #ff6b81;
         }
         .chat-container {
             width: 100%;
@@ -110,10 +133,11 @@
 </head>
 <body>
     <div class="header-image">
-        <img src="411c4498-faf8-46f6-9456-a983bde90ccf.png" alt="Header Image">
+        <img src="/static/aed11d6975231b91c8e992c02b8376da.gif" alt="Header GIF">
     </div>
     <div class="image-display">
         <img id="generated-image" src="" alt="Generated Image">
+        <button id="edit-button" class="edit-button">Edit Image</button>
     </div>
     <div class="chat-container">
         <div id="chat" class="chat-box"></div>
@@ -139,8 +163,18 @@
             const data = await response.json();
             document.getElementById('chat').innerHTML += `<div><strong>You:</strong> ${prompt}</div>`;
             document.getElementById('chat').innerHTML += `<div><strong>AI:</strong> Image generated</div>`;
-            document.getElementById('generated-image').src = data.image_url;
-            document.getElementById('generated-image').style.display = 'block'; // Display image once it's loaded
+
+            const img = document.getElementById('generated-image');
+            const editButton = document.getElementById('edit-button');
+
+            img.src = data.image_url;
+            img.style.display = 'block';
+            editButton.style.display = 'block';
+
+            editButton.onclick = function () {
+                window.location.href = `/edit?image_url=${encodeURIComponent(data.image_url)}`;
+            };
+
             document.getElementById('loading-indicator').style.display = 'none';
         }
     </script>
