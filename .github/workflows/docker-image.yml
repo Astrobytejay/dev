@@ -14,8 +14,14 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v3
 
+    - name: Set up Docker credentials
+      run: |
+        echo "${{ secrets.DOCKER_USERNAME }}" > docker_username.txt
+        echo "${{ secrets.DOCKER_PASSWORD }}" > docker_password.txt
+
     - name: Log in to Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      run: |
+        cat docker_password.txt | docker login -u $(cat docker_username.txt) --password-stdin
 
     - name: Build the Docker image
       run: docker build . -t astrobytem/svatai:latest
