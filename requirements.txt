@@ -1,0 +1,9 @@
+transformers
+torch
+diffusers
+huggingface-hub
+fastapi
+uvicorn
+accelerate
+sentencepiece
+protobuf

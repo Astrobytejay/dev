@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generator Chat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a2e;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            color: #fff;
+        }
+        .header-image {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0f3460;
+            padding: 20px;
+        }
+        .header-image img {
+            max-width: 200px; /* Adjust the size as needed */
+            height: auto;
+        }
+        .image-display {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #162447;
+        }
+        .image-display img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            display: none; /* Hide until image is available */
+        }
+        .chat-container {
+            width: 100%;
+            padding: 20px;
+            background-color: #0f3460;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .chat-box {
+            width: 100%;
+            padding: 10px;
+            overflow-y: auto;
+            height: 150px;
+            box-sizing: border-box;
+            background-color: #1a1a2e;
+            border-radius: 8px;
+            color: #e0e0e0;
+        }
+        .input {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 10px;
+        }
+        .input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #57606f;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+            background-color: #162447;
+            color: #f5f5f5;
+        }
+        .input button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #e94560;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .input button:hover {
+            background-color: #ff6b81;
+        }
+        #loading-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 52, 96, 0.8);
+            color: #fff;
+            font-size: 18px;
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 9999;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-image">
+        <img src="411c4498-faf8-46f6-9456-a983bde90ccf.png" alt="Header Image">
+    </div>
+    <div class="image-display">
+        <img id="generated-image" src="" alt="Generated Image">
+    </div>
+    <div class="chat-container">
+        <div id="chat" class="chat-box"></div>
+        <div class="input">
+            <input type="text" id="prompt" placeholder="Enter your prompt">
+            <button onclick="sendPrompt()">Generate Image</button>
+        </div>
+    </div>
+    <div id="loading-indicator">
+        <span id="loading-text">Generating image...</span>
+    </div>
+    <script>
+        async function sendPrompt() {
+            document.getElementById('loading-indicator').style.display = 'block';
+
+            const prompt = document.getElementById('prompt').value;
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt })
+            });
+
+            const data = await response.json();
+            document.getElementById('chat').innerHTML += `<div><strong>You:</strong> ${prompt}</div>`;
+            document.getElementById('chat').innerHTML += `<div><strong>AI:</strong> Image generated</div>`;
+            document.getElementById('generated-image').src = data.image_url;
+            document.getElementById('generated-image').style.display = 'block'; // Display image once it's loaded
+            document.getElementById('loading-indicator').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
